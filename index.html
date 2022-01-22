@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BikeShop</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+</head>
+
+<body>
+  <div>
+    <h2>Monitor de Inventario</h2>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-3 form-group">
+          <label class="form-label">Tiendas</label>
+          <select id="stores" class="form-control w-auto d-inline">
+            <option selected>Seleccionar</option>
+          </select>
+        </div>
+        <div class="col-3 form-group">
+          <label class="form-label">Categorías</label>
+          <select id="categories" class="form-control w-auto d-inline">
+            <option selected>Seleccionar</option>
+          </select>
+        </div>
+        <div class="col-3 form-group">
+          <label class="form-label">Marcas</label>
+          <select id="brands" class="form-control w-auto d-inline">
+            <option selected>Seleccionar</option>
+          </select>
+        </div>
+        <div class="col-3">
+          <button onclick="getTable()" type="button" class="btn btn-info">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="table">
+    <div class="container pt-5 w-75">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Tienda</th>
+            <th scope="col">ID Producto</th>
+            <th scope="col">Nombre Producto</th>
+            <th scope="col">Inventario</th>
+            <th scope="col">Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <hr />
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+
+</html>
+
+<style>
+  body {
+    text-align: center;
+  }
+</style>
+
+<script>
+  const url = "http://localhost:3000";
+  const stores = document.getElementById("stores");
+  const categories = document.getElementById("categories");
+  const brands = document.getElementById("brands");
+  const tableBody = document.getElementById("tableBody");
+
+  const getStores = async () => {
+    const storesList = await axios.get(url + "/tiendas")
+    const result = storesList.data.reduce((acc, val, index) => {
+      return `${acc}<option value="${val.store_name}">${val.store_name}</option>`;
+    }, stores.innerHTML)
+    stores.innerHTML = result;
+  };
+
+  const getCategories = async () => {
+    const categoriesList = await axios.get(url + "/categorias")
+    const result = categoriesList.data.reduce((acc, val, index) => {
+      return `${acc}<option value="${val.category_name}">${val.category_name}</option>`;
+    }, categories.innerHTML)
+    categories.innerHTML = result;
+  };
+
+  const getBrands = async () => {
+    const brandsList = await axios.get(url + "/marcas")
+    const result = brandsList.data.reduce((acc, val, index) => {
+      return `${acc}<option value="${val.brand_name}">${val.brand_name}</option>`;
+    }, brands.innerHTM)
+    brands.innerHTML = result;
+  };
+
+  const getTable = async () => {
+    let storeName = document.getElementById("stores").value;
+    let categoryName = document.getElementById("categories").value;
+    let brandName = document.getElementById("brands").value;
+
+    const response = await axios.get(url + "/tabla", { params: { storeName, brandName, categoryName } })
+    const { data } = response
+    tableBody.innerHTML = "";
+    console.log('data', data)
+    data.forEach((item, index) => {
+      console.log("item", item)
+      tableBody.innerHTML += `
+        <tr>
+          <td>${item.store_name}</td>
+          <td>${item.product_id}</td>
+          <td>${item.product_name}</td>
+          <td>${item.quantity}</td>
+          <td>
+            <button class="btn btn-info" onclick="">Ver</button>
+          </td>
+        </tr>
+      `;
+    });
+  };
+
+  window.onload = () => {
+    getStores();
+    getCategories();
+    getBrands();
+  }
+</script>

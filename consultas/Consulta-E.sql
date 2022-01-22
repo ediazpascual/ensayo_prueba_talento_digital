@@ -1,0 +1,1 @@
+SELECT product_id, product_name, quantity FROM products JOIN stocks USING(product_id) WHERE store_id=1 AND category_id=5 ORDER BY product_name;

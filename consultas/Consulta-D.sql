@@ -1,0 +1,1 @@
+SELECT brand_id, brand_name, SUM(quantity) FROM products JOIN stocks USING(product_id) JOIN brands USING(brand_id) GROUP BY brand_id, brand_name ORDER BY sum DESC;
