@@ -11,7 +11,7 @@
 
 <body>
   <div>
-    <h2>Monitor de Inventario</h2>
+    <h2 class="my-5">Monitor de Inventario</h2>
 
     <div class="container">
       <div class="row">
@@ -96,7 +96,7 @@
     const brandsList = await axios.get(url + "/marcas")
     const result = brandsList.data.reduce((acc, val, index) => {
       return `${acc}<option value="${val.brand_name}">${val.brand_name}</option>`;
-    }, brands.innerHTM)
+    }, brands.innerHTML)
     brands.innerHTML = result;
   };
 
